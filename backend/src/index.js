@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
+const path = require('path');
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +28,14 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/chatbot', require('./routes/chatbot'));
 app.use('/api/payment', require('./routes/payment'));
 app.use('/api/admin', require('./routes/admin'));
+
+// Serve static files from the React frontend build
+app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+
+// This should be the last route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
